@@ -35,7 +35,29 @@ class DepositoStrumenti:
             Funzione che legge tutti gli strumenti nel database
             :return: una lista con tutti gli strumenti presenti oppure None
         """
-        # TODO
+
+        cnx = get_connection()
+
+        # gestione della connessione
+        if cnx is None:
+            return None
+
+        cursore = cnx.cursor()
+
+        query = """ SELECT * 
+                    FROM strumento """
+
+        cursore.execute(query)
+
+        strumenti = []
+
+        for riga in cursore:
+            strumento = Strumento(riga[0], riga[1], riga[2], riga[3], riga[4], riga[5])
+            strumenti.append(strumento)
+
+        cursore.close()
+        cnx.close()
+        return strumenti
 
     def cerca_strumenti_per_tipo(self, tipo) -> list[Strumento] | None:
         """
@@ -43,4 +65,26 @@ class DepositoStrumenti:
             :param tipo: il tipo dello strumento (es. "Chitarra")
             :return: una lista con tutti gli strumenti del tipo indicato oppure None
         """
-        # TODO
+        cnx = get_connection()
+
+        # gestione della connessione
+        if cnx is None:
+            return None
+
+        cursore = cnx.cursor()
+
+        query = """ SELECT *
+                    FROM strumento 
+                    WHERE tipo = %s """
+
+        cursore.execute(query, (tipo,))
+
+        strumenti_tipo = []
+
+        for riga in cursore:
+            strumento = Strumento(riga[0], riga[1], riga[2], riga[3], riga[4], riga[5])
+            strumenti_tipo.append(strumento)
+
+        cursore.close()
+        cnx.close()
+        return strumenti_tipo
